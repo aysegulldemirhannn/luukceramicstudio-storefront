@@ -1,35 +1,30 @@
-import { Github } from "@medusajs/icons"
-import { Button, Heading } from "@medusajs/ui"
+import Image from "next/image"
+import { Playfair_Display, Lora } from "next/font/google"
+
+const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] })
+const lora = Lora({ subsets: ["latin"], weight: ["400", "500"] })
+
 
 const Hero = () => {
   return (
-    <div className="h-[75vh] w-full border-b border-ui-border-base relative bg-ui-bg-subtle">
-      <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center small:p-32 gap-6">
-        <span>
-          <Heading
-            level="h1"
-            className="text-3xl leading-10 text-ui-fg-base font-normal"
-          >
-            Ecommerce Starter Template
-          </Heading>
-          <Heading
-            level="h2"
-            className="text-3xl leading-10 text-ui-fg-subtle font-normal"
-          >
-            Powered by Medusa and Next.js
-          </Heading>
-        </span>
-        <a
-          href="https://github.com/medusajs/nextjs-starter-medusa"
-          target="_blank"
+    <section className="relative flex flex-col items-center justify-center text-center py-32 min-h-[80vh]">
+      {/* Blur'lu background */}
+    
+
+      {/* İçerik */}
+      <div className="z-10 max-w-3xl px-6">
+        <h1
+          className={`${playfair.className} text-4xl md:text-6xl font-bold text-black drop-shadow-lg`}
         >
-          <Button variant="secondary">
-            View on GitHub
-            <Github />
-          </Button>
-        </a>
+          Luuk Ceramic Studio
+        </h1>
+        <p
+          className={`${lora.className} mt-6 text-lg md:text-xl leading-relaxed text-black drop-shadow`}
+        >
+         Exploring clay through forms that shift between sculptural and functional. Each piece is handbuilt and inspired by the world around us.
+        </p>
       </div>
-    </div>
+    </section>
   )
 }
 

@@ -1,108 +1,107 @@
 "use client"
 
-import { Popover, PopoverPanel, Transition } from "@headlessui/react"
-import { ArrowRightMini, XMark } from "@medusajs/icons"
-import { Text, clx, useToggleState } from "@medusajs/ui"
-import { Fragment } from "react"
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { STORE_ENABLED } from "@lib/flags"
+import { Playfair_Display } from "next/font/google"
 
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CountrySelect from "../country-select"
-import { HttpTypes } from "@medusajs/types"
+const BRAND_NAME = "LUUK CERAMIC STUDIO"
+const playfair = Playfair_Display({ subsets: ["latin"], weight: ["400", "700"] })
 
-const SideMenuItems = {
-  Home: "/",
-  Store: "/store",
-  Account: "/account",
-  Cart: "/cart",
-}
+export default function SideMenu() {
+  const [open, setOpen] = useState(false)
 
-const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
-  const toggleState = useToggleState()
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
 
   return (
-    <div className="h-full">
-      <div className="flex items-center h-full">
-        <Popover className="h-full flex">
-          {({ open, close }) => (
-            <>
-              <div className="relative flex h-full">
-                <Popover.Button
-                  data-testid="nav-menu-button"
-                  className="relative h-full flex items-center transition-all ease-out duration-200 focus:outline-none hover:text-ui-fg-base"
-                >
-                  Menu
-                </Popover.Button>
-              </div>
+    <>
+      {/* Trigger (hamburger) – sadece mobil */}
+      <button
+  type="button"
+  onClick={() => setOpen(true)}
+  aria-label="Open menu"
+  className="sm:hidden inline-flex h-10 w-10 items-center justify-center rounded-md
+             text-gray-200 hover:text-white hover:bg-white/10 focus:outline-none
+             focus:ring-2 focus:ring-white/30 leading-none"
+>
+  <div className="flex flex-col items-center justify-center gap-1.5">
+    <span aria-hidden className="block w-6 h-[2px] bg-current rounded" />
+    <span aria-hidden className="block w-6 h-[2px] bg-current rounded" />
+    <span aria-hidden className="block w-6 h-[2px] bg-current rounded" />
+  </div>
+</button>
 
-              <Transition
-                show={open}
-                as={Fragment}
-                enter="transition ease-out duration-150"
-                enterFrom="opacity-0"
-                enterTo="opacity-100 backdrop-blur-2xl"
-                leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 backdrop-blur-2xl"
-                leaveTo="opacity-0"
-              >
-                <PopoverPanel className="flex flex-col absolute w-full pr-4 sm:pr-0 sm:w-1/3 2xl:w-1/4 sm:min-w-min h-[calc(100vh-1rem)] z-30 inset-x-0 text-sm text-ui-fg-on-color m-2 backdrop-blur-2xl">
-                  <div
-                    data-testid="nav-menu-popup"
-                    className="flex flex-col h-full bg-[rgba(3,7,18,0.5)] rounded-rounded justify-between p-6"
+      {open && (
+        <div className="fixed inset-0 z-[100] sm:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} aria-hidden />
+          <div className="absolute inset-0 bg-white text-neutral-900 flex flex-col">
+            {/* Üst bar: X – Marka – Cart(0) */}
+            <div className="h-14 flex items-center justify-between px-4 border-b border-black/10">
+              <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 -ml-2">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+
+              <span className={`${playfair.className} text-2xl tracking-wide`}>{BRAND_NAME}</span>
+
+              {STORE_ENABLED ? (
+                <Link href="/cart" className="text-sm">Cart (0)</Link>
+              ) : (
+                <span className="text-sm opacity-0 select-none">.</span>
+              )}
+            </div>
+
+            {/* Menü gövdesi */}
+            <div className="flex-1 overflow-y-auto">
+              <nav className="h-full flex flex-col items-center justify-center gap-10 py-10">
+                {/* Shop – STORE_ENABLED true ise göster */}
+                {STORE_ENABLED && (
+                  <Link
+                    href="/store"
+                    onClick={() => setOpen(false)}
+                    className={`${playfair.className} text-4xl hover:opacity-70 transition-opacity`}
                   >
-                    <div className="flex justify-end" id="xmark">
-                      <button data-testid="close-menu-button" onClick={close}>
-                        <XMark />
-                      </button>
-                    </div>
-                    <ul className="flex flex-col gap-6 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
-                        return (
-                          <li key={name}>
-                            <LocalizedClientLink
-                              href={href}
-                              className="text-3xl leading-10 hover:text-ui-fg-disabled"
-                              onClick={close}
-                              data-testid={`${name.toLowerCase()}-link`}
-                            >
-                              {name}
-                            </LocalizedClientLink>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                    <div className="flex flex-col gap-y-6">
-                      <div
-                        className="flex justify-between"
-                        onMouseEnter={toggleState.open}
-                        onMouseLeave={toggleState.close}
-                      >
-                        {regions && (
-                          <CountrySelect
-                            toggleState={toggleState}
-                            regions={regions}
-                          />
-                        )}
-                        <ArrowRightMini
-                          className={clx(
-                            "transition-transform duration-150",
-                            toggleState.state ? "-rotate-90" : ""
-                          )}
-                        />
-                      </div>
-                      <Text className="flex justify-between txt-compact-small">
-                        © {new Date().getFullYear()} Medusa Store. All rights
-                        reserved.
-                      </Text>
-                    </div>
-                  </div>
-                </PopoverPanel>
-              </Transition>
-            </>
-          )}
-        </Popover>
-      </div>
-    </div>
+                    Shop
+                  </Link>
+                )}
+                <Link
+                  href="/"
+                  onClick={() => setOpen(false)}
+                  className={`${playfair.className} text-4xl hover:opacity-70 transition-opacity`}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={() => setOpen(false)}
+                  className={`${playfair.className} text-4xl hover:opacity-70 transition-opacity`}
+                >
+                  About
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setOpen(false)}
+                  className={`${playfair.className} text-4xl hover:opacity-70 transition-opacity`}
+                >
+                  Contact
+                </Link>
+                 <Link
+                  href="/vessels"
+                  onClick={() => setOpen(false)}
+                  className={`${playfair.className} text-4xl hover:opacity-70 transition-opacity`}
+                >
+                  Vessels
+                </Link>
+              </nav>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
-
-export default SideMenu

@@ -1,60 +1,48 @@
 import { Suspense } from "react"
-
-import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CartButton from "@modules/layout/components/cart-button"
+import Link from "next/link"
 import SideMenu from "@modules/layout/components/side-menu"
+import CartButton from "@modules/layout/components/cart-button"
+import { STORE_ENABLED } from "@lib/flags"
 
 export default async function Nav() {
-  const regions = await listRegions().then((regions: StoreRegion[]) => regions)
-
   return (
-    <div className="sticky top-0 inset-x-0 z-50 group">
-      <header className="relative h-16 mx-auto border-b duration-200 bg-white border-ui-border-base">
-        <nav className="content-container txt-xsmall-plus text-ui-fg-subtle flex items-center justify-between w-full h-full text-small-regular">
-          <div className="flex-1 basis-0 h-full flex items-center">
-            <div className="h-full">
-              <SideMenu regions={regions} />
-            </div>
-          </div>
+    <div className="sticky top-0 inset-x-0 z-50 bg-neutral-900 border-b border-white/10">
+      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-          <div className="flex items-center h-full">
-            <LocalizedClientLink
-              href="/"
-              className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
-              data-testid="nav-store-link"
-            >
-              Medusa Store
-            </LocalizedClientLink>
-          </div>
+        {/* SOL: Hamburger + (desktop) linkler */}
+        <div className="flex basis-0 items-center gap-6 h-full">
+          <SideMenu />
 
-          <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
-            <div className="hidden small:flex items-center gap-x-6 h-full">
-              <LocalizedClientLink
-                className="hover:text-ui-fg-base"
-                href="/account"
-                data-testid="nav-account-link"
-              >
-                Account
-              </LocalizedClientLink>
-            </div>
-            <Suspense
-              fallback={
-                <LocalizedClientLink
-                  className="hover:text-ui-fg-base flex gap-2"
-                  href="/cart"
-                  data-testid="nav-cart-link"
-                >
-                  Cart (0)
-                </LocalizedClientLink>
-              }
-            >
-              <CartButton />
-            </Suspense>
+          <div className="hidden sm:flex items-center gap-6 h-full text-gray-300">
+           <Link href="/" className="hover:text-white">Home</Link>
+  <Link href="/about" className="hover:text-white">About</Link>
+  <Link href="/contact" className="hover:text-white">Contact</Link>
+  <Link href="/vessels" className="hover:text-white">Vessels</Link>
           </div>
-        </nav>
-      </header>
+        </div>
+
+        {/* ORTA: Marka */}
+       <div className="flex items-center h-full">
+          <Link href="/" className="text-xl font-semibold tracking-tight text-white">
+            Luuk Ceramic Studio
+          </Link>
+        </div>
+
+        {/* SAĞ: Cart */}
+     <div className="flex basis-0 items-center justify-end h-full">
+  <Link
+    href="/cart"
+    className="inline-flex items-center justify-center h-full
+               text-gray-300 hover:text-white
+               whitespace-nowrap break-normal leading-none"
+    data-testid="nav-cart-link"
+  >
+    {/* non-breaking boşluk için &nbsp; kullandım */}
+    Cart&nbsp;(0)
+  </Link>
+</div>
+
+      </nav>
     </div>
   )
 }
