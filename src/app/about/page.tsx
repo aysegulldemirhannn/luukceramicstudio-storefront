@@ -24,8 +24,8 @@ export default function AboutPage() {
           <Image
             src="/images/about.jpg"
             alt="Büşra – Luuk Ceramic Studio"
-            width={1600}
-            height={900}
+            width={400}
+            height={200}
             priority
             className="w-full h-auto object-cover rounded-lg"
           />

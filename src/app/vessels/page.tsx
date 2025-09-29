@@ -14,7 +14,7 @@ const IMAGES = [
   { src: "/images/vessels/2.jpg", alt: "Vessel" },
   { src: "/images/vessels/3.jpg", alt: "Vessel" },
   { src: "/images/vessels/4.jpg", alt: "Vessel" },
-  { src: "/images/vessels/5.jpg", alt: "Vessel" },
+  { src: "/images/vessels/5.JPG", alt: "Vessel" },
   { src: "/images/vessels/6.jpg", alt: "Vessel" },
   { src: "/images/vessels/7.jpg", alt: "Vessel" },
   { src: "/images/vessels/8.jpg", alt: "Vessel" },

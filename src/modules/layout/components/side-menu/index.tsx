@@ -50,7 +50,7 @@ export default function SideMenu() {
               <span className={`${playfair.className} text-2xl tracking-wide`}>{BRAND_NAME}</span>
 
               {STORE_ENABLED ? (
-                <Link href="/cart" className="text-sm">Cart (0)</Link>
+                <Link href="/home" className="text-sm">Cart (0)</Link>
               ) : (
                 <span className="text-sm opacity-0 select-none">.</span>
               )}
